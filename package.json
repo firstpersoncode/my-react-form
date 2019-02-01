@@ -1,16 +1,16 @@
 {
-  "name": "my-form",
+  "name": "my-react-form",
   "version": "0.0.1",
   "main": "dist/index.js",
   "private": false,
-  "homepage": "https://github.com/firstpersoncode/my-form/blob/master/README.md",
-  "url": "https://github.com/firstpersoncode/my-form/issues",
+  "homepage": "https://github.com/firstpersoncode/my-react-form/blob/master/README.md",
+  "url": "https://github.com/firstpersoncode/my-react-form/issues",
   "email": "nasser.maronie@gmail.com",
   "license": "MIT",
   "description": "React Form, for those who like simplicity",
   "repository": {
     "type": "git",
-    "url": "https://github.com/firstpersoncode/my-form"
+    "url": "https://github.com/firstpersoncode/my-react-form"
   },
   "dependencies": {
     "immutability-helper": "^2.9.0",
