@@ -1,8 +1,7 @@
-import 'babel-polyfill'
 import React from 'react'
 import { render } from 'react-dom'
-import FormView from './FormView'
+import WithMyForm from './components/WithMyForm'
 render(
-  <FormView />,
+  <WithMyForm />,
   document.getElementById('root')
 )
