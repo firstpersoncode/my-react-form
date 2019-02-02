@@ -1,15 +1,14 @@
 import 'babel-polyfill'
 import React, { Component } from 'react'
 import MyForm from './MyForm'
-export const withMyForm = ({
-  validation,
-  scrollOnError = false
-}) => ChildComponent => class WithMyForm extends Component {
+export const withMyForm = configs => ChildComponent => class WithMyForm extends Component {
   render() {
     return (
       <MyForm
-        scrollOnError={scrollOnError}
-        validation={validation}
+        validation={configs.validation}
+        onSubmit={configs.onSubmit}
+        onValidate={configs.onValidate}
+        scrollOnError={configs.scrollOnError}
         render={form => <ChildComponent {...form} {...this.props} />} />
     )
   }
