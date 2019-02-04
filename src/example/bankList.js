@@ -1,5 +1,4 @@
 export default [
-  { name: 'Pilih Bank', value: '', disabled: true },
   { name: 'Sinarmas', value: 'Sinarmas' },
   { name: 'Bank Syariah Mandiri', value: 'Bank Syariah Mandiri' },
   { name: 'Bank Tabungan Pensiunan Nasional', value: 'Bank Tabungan Pensiunan Nasional' },
