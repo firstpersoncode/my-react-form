@@ -46,7 +46,7 @@ class MyForm extends Component {
   _renderForm = () => {
     const { children, render } = this.props
     if (render) {
-      return typeof render === 'function' ? render(this._returnForm()) : this._renderStaticForm(render)
+      return render(this._returnForm())
     } else if (children) {
       return children(this._returnForm())
     } else {
@@ -112,7 +112,7 @@ class MyForm extends Component {
   _validateField = async (field, validation) => {
     let initialValidation = this.state.formValidation[field]
     if (!validation && !initialValidation) {
-      return
+      return this._setIsValid()
     }
     if (!validation && initialValidation) {
       validation = initialValidation
