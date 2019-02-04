@@ -55,9 +55,9 @@ class MyForm extends Component {
   }
 
   // TODO:
-  // _renderStaticForm = render => {
-  //
-  // }
+  _renderStaticForm = render => {
+    return render
+  }
 
   _returnForm = () => {
     const { onSubmit, onValidate } = this.props
