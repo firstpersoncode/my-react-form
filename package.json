@@ -1,6 +1,6 @@
 {
   "name": "my-react-form",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "dist/index.js",
   "private": false,
   "homepage": "https://github.com/firstpersoncode/my-react-form/blob/master/README.md",
