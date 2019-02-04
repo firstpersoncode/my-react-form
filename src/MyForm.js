@@ -213,7 +213,7 @@ class MyForm extends Component {
 
   setFieldValue = (field, value) => this._setFieldValue(field, value)
 
-  setFieldError = (field, error) => this.setFieldError(field, error)
+  setFieldError = (field, error) => this._setFieldError(field, error)
 
   setFieldTouched = (field, touch) => this._setFieldTouched(field, touch)
 
