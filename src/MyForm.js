@@ -329,7 +329,6 @@ class MyForm extends Component {
   }
 
   render() {
-    console.log(this._renderForm, this._renderForm())
     return this._renderForm()
   }
 }

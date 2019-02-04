@@ -1,6 +1,6 @@
 {
   "name": "my-react-form",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "dist/index.js",
   "private": false,
   "homepage": "https://github.com/firstpersoncode/my-react-form/blob/master/README.md",
@@ -23,7 +23,8 @@
     "start": "NODE_ENV=dev webpack-dev-server --mode development",
     "build": "rm -rf ./dist && webpack",
     "test": "jest",
-    "lint": "./node_modules/.bin/eslint --fix src/*.js src/**/*.js"
+    "lint": "./node_modules/.bin/eslint --fix src/*.js src/**/*.js",
+    "deploy": "npm run lint && npm run build && npm publish"
   },
   "eslintConfig": {
     "extends": "react-app"
