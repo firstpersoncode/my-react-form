@@ -1,21 +1,29 @@
-import { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import update from 'immutability-helper'
+import CssBaseline from '@material-ui/core/CssBaseline'
+
 import { scrollTo } from './utils/auto-scroll'
+import Field from './Field'
 
 class MyForm extends Component {
   static propTypes = {
-    children: PropTypes.func,
-    onValidate: PropTypes.func,
+    children: PropTypes.func || React.PropTypes.oneOfType([
+      React.PropTypes.arrayOf(React.PropTypes.node),
+      React.PropTypes.node
+    ]),
+    form: PropTypes.func || PropTypes.array || PropTypes.object,
+    onUpdate: PropTypes.func,
     onSubmit: PropTypes.func,
-    render: PropTypes.func || PropTypes.object,
     scrollOnError: PropTypes.bool,
     validateOnInit: PropTypes.bool,
+    withBaseCSS: PropTypes.bool,
     initialValues: PropTypes.object,
     validation: PropTypes.object
   }
 
-  constructor(props) {
+  // component life cycle handlers
+  constructor (props) {
     super(props)
     this.state = {
       isValid: false,
@@ -40,27 +48,120 @@ class MyForm extends Component {
     const { initialValues, validation, validateOnInit } = this.props
     validation && this._setformValidation(validation)
     initialValues && Object.keys(initialValues).length && this.setInitialValues(initialValues, validateOnInit)
+    this._validateFields(validation)
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    const { onUpdate } = prevProps
+
+    if (onUpdate && typeof onUpdate === 'function') {
+      for (let state in prevState) {
+        if (
+          prevState.hasOwnProperty(state) &&
+          this.state.hasOwnProperty(state)
+        ) {
+          if (
+            typeof prevState[state] === 'object' &&
+            prevState[state] && this.state[state]
+          ) {
+            for (let s in prevState[state]) {
+              if (prevState[state][s] !== this.state[state][s]) {
+                onUpdate(this._returnForm())
+              }
+            }
+          } else if (
+            prevState[state] && this.state[state] &&
+            prevState[state] !== this.state[state]
+          ) {
+            onUpdate(this._returnForm())
+          }
+        }
+      }
+    }
+  }
+
+  render () {
+    const { withBaseCSS } = this.props
+    return (
+      <Fragment>
+        {withBaseCSS ? <CssBaseline /> : null}
+        {this._renderForm()}
+      </Fragment>
+    )
   }
 
   // private handlers
   _renderForm = () => {
-    const { children, render } = this.props
-    if (render) {
-      return render(this._returnForm())
+    const { children, form } = this.props
+    if (form) {
+      return typeof form === 'function' ? form(this._returnForm()) : this._renderStaticForm(render)
     } else if (children) {
-      return children(this._returnForm())
+      return typeof children === 'function' ? children(this._returnForm()) : children
     } else {
       return null
     }
   }
 
-  // TODO:
   _renderStaticForm = render => {
-    return render
+    const {
+      errors,
+      touched,
+      values
+    } = this.state
+    const _configs = (field, key, fieldName = '') => update(field, updateField => {
+      let name = field['name'] || field['id'] || (fieldName && typeof fieldName === 'string' ? fieldName : 'field-' + key)
+      if (!updateField['value']) {
+        updateField['value'] = values[name]
+      }
+      if (!updateField['onChange']) {
+        if (updateField['type'] === 'checkbox-group') {
+          updateField['onChange'] = this.onCheckGroup
+        } else if (updateField['type'] === 'checkbox') {
+          updateField['onChange'] = this.onCheck
+        } else {
+          updateField['onChange'] = this.onChange
+        }
+      }
+      if (!updateField['onBlur']) {
+        updateField['onBlur'] = this.onBlur
+      }
+      if (!updateField['error']) {
+        updateField['error'] = touched[name] &&
+          errors[name]
+      }
+      if (!updateField['info']) {
+        updateField['info'] = touched[name] &&
+          errors[name] &&
+          errors[name]
+      }
+      return updateField
+    })
+
+    if (Array.isArray(render) && render.length) {
+      return render.map((field, i) => {
+        return (
+          <Field
+            key={i}
+            {..._configs(field, i)}
+          />
+        )
+      })
+    } else if (!Array.isArray(render) && Object.keys(render).length) {
+      return Object.keys(render).map((field, i) => {
+        return (
+          <Field
+            key={i}
+            {..._configs(render[field], i, field)}
+          />
+        )
+      })
+    }
+
+    return
   }
 
   _returnForm = () => {
-    const { onSubmit, onValidate } = this.props
+    const { onSubmit, onUpdate } = this.props
     let form = {
       values: this.state.values,
       errors: this.state.errors,
@@ -76,34 +177,20 @@ class MyForm extends Component {
         validateField: this.validateField,
         onChange: this.onChange,
         onBlur: this.onBlur,
+        onCheckGroup: this.onCheckGroup,
         submitForm: this.submitForm,
         validateForm: this.validateForm,
-        handleSubmit: null,
-        handleValidate: null
+        handleSubmit: onSubmit && typeof onSubmit === 'function'
+          ? this.handleSubmit
+          : null,
+        // handleUpdate: onUpdate && typeof onUpdate === 'function'
+        //   ? this.handleUpdate
+        //   : null
       }
     }
-    // only return handleSubmit if onSubmit props is provided
-    if (onSubmit && typeof onSubmit === 'function') {
-      form = update(form, {
-        handlers: update(form.handlers, {
-          handleSubmit: {
-            $set: this.handleSubmit
-          }
-        })
-      })
-    }
-    // only return handleValidate if onValidate props is provided
-    if (onValidate && typeof onValidate === 'function') {
-      form = update(form, {
-        handlers: update(form.handlers, {
-          handleValidate: {
-            $set: this.handleValidate
-          }
-        })
-      })
-    }
+
     !form.handlers.handleSubmit && delete form.handlers.handleSubmit
-    !form.handlers.handleValidate && delete form.handlers.handleValidate
+    // !form.handlers.handleUpdate && delete form.handlers.handleUpdate
     return form
   }
 
@@ -118,19 +205,25 @@ class MyForm extends Component {
       validation = initialValidation
     }
     let valid = validation.validate(this.state.values[field])
+    if (typeof valid === 'function') {
+      valid = valid(this.state.values)
+    }
     let errorMessage = !valid
       ? typeof validation.error === 'function'
         ? validation.error(this.state.values[field])
         : validation.error
       : false
     await this._setFieldError(field, errorMessage)
-    await this._setIsValid()
+    this._setIsValid()
   }
 
-  _validateFields = async fields => {
+  _validateFields = fields => {
+    if (!fields) {
+      return this._setIsValid()
+    }
     for (let field in fields) {
       if (fields.hasOwnProperty(field)) {
-        await this._validateField(field, fields[field])
+        this._validateField(field, fields[field])
       }
     }
   }
@@ -196,8 +289,8 @@ class MyForm extends Component {
   setInitialValues = async (fields, validate) => {
     await this._setFieldsValue(fields)
     if (validate) {
-      await this._setFieldsTouched(fields)
-      await this._validateFields(this.state.formValidation)
+      await this._setFieldsTouched(this.state.formValidation)
+      this._validateFields(this.state.formValidation)
     }
   }
 
@@ -208,7 +301,7 @@ class MyForm extends Component {
     otherwise, will check if it has validation rule set for this field
     */
     await this._setFieldTouched(field, true)
-    await this._validateField(field, validation)
+    this._validateField(field, validation)
   }
 
   setFieldValue = (field, value) => this._setFieldValue(field, value)
@@ -219,23 +312,56 @@ class MyForm extends Component {
 
   setSubmitting = submit => this._setSubmitting(submit)
 
-  onChange = e => {
+  onChange = async e => {
     let field = e.id || e.name
       ? e.id || e.name
       : e.target.id || e.target.name
     let value = e.value
       ? e.value
       : e.target.value
-    this._setFieldValue(field, value)
-    this._validateField(field, this.state.formValidation[field])
-    this._setFieldTouched(field, this.state.errors[field])
+    await this._setFieldValue(field, value)
+    await this._validateField(field, this.state.formValidation[field])
+    this._setFieldTouched(field, this.state.errors[field] ? true : false)
   }
 
-  onBlur = e => {
+  onCheck = async e => {
     let field = e.id || e.name
       ? e.id || e.name
       : e.target.id || e.target.name
-    this._setFieldTouched(field, true)
+    let value = e.checked
+      ? e.checked
+      : e.target.checked
+    await this._setFieldValue(field, value)
+    await this._validateField(field, this.state.formValidation[field])
+    this._setFieldTouched(field, this.state.errors[field] ? true : false)
+  }
+
+  onCheckGroup = async e => {
+    let field = e.id || e.name
+      ? e.id || e.name
+      : e.target.id || e.target.name
+    let value = e.value
+      ? e.value
+      : e.target.value
+    let checked = e.checked
+      ? e.checked
+      : e.target.checked
+    let values = this.state.values[field] || []
+    if (checked) {
+      values = update(values, { $push: [value] })
+    } else {
+      values = update(values, { $splice: [[values.indexOf(value), 1]] })
+    }
+    await this._setFieldValue(field, values)
+    await this._validateField(field, this.state.formValidation[field])
+    this._setFieldTouched(field, this.state.errors[field] ? true : false)
+  }
+
+  onBlur = async e => {
+    let field = e.id || e.name
+      ? e.id || e.name
+      : e.target.id || e.target.name
+    await this._setFieldTouched(field, true)
     this._validateField(field, this.state.formValidation[field])
   }
 
@@ -318,19 +444,15 @@ class MyForm extends Component {
     return cb && typeof cb === 'function' ? cb(this._returnForm()) : this._returnForm()
   }
 
-  handleSubmit = () => {
+  handleSubmit = options => () => {
     const { onSubmit } = this.props
-    this.submitForm(onSubmit)
+    this.submitForm(onSubmit, options)
   }
 
-  handleValidate = () => {
-    const { onValidate } = this.props
-    this.validateForm(onValidate)
-  }
-
-  render() {
-    return this._renderForm()
-  }
+  // handleUpdate = options => () => {
+  //   const { onUpdate } = this.props
+  //   this.validateForm(onUpdate, options)
+  // }
 }
 
 export default MyForm
