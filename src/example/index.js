@@ -13,6 +13,7 @@ import './components/highlight.css'
 // demos
 import MyFormBasicDemo from './components/MyFormBasicDemo'
 import MyFormDemo from './components/MyFormDemo'
+import MyFormStaticDemo from './components/MyFormStaticDemo'
 import WithMyFormDemo from './components/WithMyFormDemo'
 
 class Example extends Component {
@@ -44,11 +45,21 @@ class Example extends Component {
         </ExpansionPanel>
         <ExpansionPanel expanded={expanded === 'MyFormDemo'} onChange={this.handleExpandClick('MyFormDemo')}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>{'<MyForm>{props => props}</MyFormDemo>'}</Typography>
+            <Typography>{'<MyForm>{props => props}</MyForm>'}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <div style={{ flexGrow: 1, background: '#555', padding: 15, overFlow: 'hidden' }}>
               <MyFormDemo />
+            </div>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <ExpansionPanel expanded={expanded === 'MyFormStaticDemo'} onChange={this.handleExpandClick('MyFormStaticDemo')}>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>{'<MyForm form={form} />'}</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <div style={{ flexGrow: 1, background: '#555', padding: 15, overFlow: 'hidden' }}>
+              <MyFormStaticDemo />
             </div>
           </ExpansionPanelDetails>
         </ExpansionPanel>

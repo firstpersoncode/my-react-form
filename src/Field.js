@@ -92,7 +92,36 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff'
         { label: 'option 2 is disabled', value: 2, labelPlacement: 'top', disabled: true },
         { label: 'option 3', value: 3 } // default labelPlacement: 'end'
       ]
-    }
+    },
+    {
+      name: 'field-checkbox',
+      id: 'field-checkbox',
+      type: 'checkbox',
+      label: 'Check Box',
+      option: {
+        label: 'option 1',
+        color: 'secondary'
+      }
+    },
+    {
+      name: 'field-checkbox-group',
+      id: 'field-checkbox-group',
+      type: 'checkbox-group',
+      label: 'Check Box Group',
+      row: true, // default false
+      options: [
+        { label: 'option 1', value: 'value 1', labelPlacement: 'start' },
+        { label: 'option 2 is disabled', value: 'value 2', labelPlacement: 'top', disabled: true },
+        { label: 'option 3', value: 'value 3' } // default labelPlacement: 'end'
+      ]
+    },
+    {
+      type: 'submit',
+      label: 'Submit',
+      float: true, // default false
+      color: 'primary',
+      variant: 'contained'
+    },
   ]
   EXAMPLE: render object
   {
@@ -176,7 +205,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff'
       float: true, // default false
       color: 'primary',
       variant: 'contained'
-    },
+    }
   }
 */
 
@@ -199,6 +228,7 @@ class Field extends Component {
       multiline,
       rowsMax,
       options,
+      option,
       row,
       helper,
       error,
@@ -477,6 +507,7 @@ class Field extends Component {
               error={error}
               fullWidth={fullWidth}
               variant={variant || 'standard'}
+              disabled={disabled}
               placeholder={placeholder}
               margin="normal"
             />

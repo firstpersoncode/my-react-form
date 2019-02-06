@@ -94,7 +94,7 @@ class MyForm extends Component {
   _renderForm = () => {
     const { children, form } = this.props
     if (form) {
-      return typeof form === 'function' ? form(this._returnForm()) : this._renderStaticForm(render)
+      return typeof form === 'function' ? form(this._returnForm()) : this._renderStaticForm(form)
     } else if (children) {
       return typeof children === 'function' ? children(this._returnForm()) : children
     } else {
@@ -110,6 +110,10 @@ class MyForm extends Component {
     } = this.state
     const _configs = (field, key, fieldName = '') => update(field, updateField => {
       let name = field['name'] || field['id'] || (fieldName && typeof fieldName === 'string' ? fieldName : 'field-' + key)
+      if (!updateField['name'] || !updateField['id']) {
+        updateField['name'] = name
+        updateField['id'] = name
+      }
       if (!updateField['value']) {
         updateField['value'] = values[name]
       }
@@ -124,6 +128,12 @@ class MyForm extends Component {
       }
       if (!updateField['onBlur']) {
         updateField['onBlur'] = this.onBlur
+      }
+      if (updateField['type'] === 'submit' && !updateField['onClick']) {
+        updateField['onClick'] = this.handleSubmit()
+      }
+      if (updateField['type'] === 'submit') {
+        updateField['disabled'] = this.state.isSubmitting
       }
       if (!updateField['error']) {
         updateField['error'] = touched[name] &&
