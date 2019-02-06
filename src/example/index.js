@@ -9,7 +9,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import Typography from '@material-ui/core/Typography'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
-import './components/highlight.css'
+import './index.css'
+import './highlight.css'
 
 // demos
 import MyFormBasicDemo from './components/MyFormBasicDemo'

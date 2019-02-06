@@ -316,6 +316,7 @@ class Field extends Component {
                 options && options.length
                   ? options.map((option, i) => (
                     <FormControlLabel
+                      key={i}
                       value={option.value}
                       label={option.label}
                       control={<Radio color={option.color || 'primary'} />}
@@ -395,6 +396,7 @@ class Field extends Component {
                 options && options.length
                   ? options.map((option, i) => (
                     <FormControlLabel
+                      key={i}
                       label={option.label}
                       control={
                         <Checkbox
