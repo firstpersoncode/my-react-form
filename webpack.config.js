@@ -45,6 +45,28 @@ if (process.env.NODE_ENV === 'dev') {
   webpackConfigs.devServer = {
     port: 3001
   }
+} else if (process.env.NODE_ENV === 'demo') {
+  webpackConfigs.entry = './src/example/index.js'
+
+  webpackConfigs.output = {
+    path: path.resolve(__dirname, 'docs'),
+    filename: 'index.js',
+    libraryTarget: 'commonjs2'
+  }
+
+  webpackConfigs.plugins.push(new HtmlWebpackPlugin({
+    // hash: true,
+    template: path.join(__dirname, "src/example/index.html"),
+    filename: "index.html"
+  }))
+
+  webpackConfigs.resolve = {
+    extensions: [".js", ".jsx"]
+  }
+
+  webpackConfigs.externals = {
+    'react': 'commonjs react'
+  }
 } else {
   webpackConfigs.mode = 'production'
   webpackConfigs.entry = './src/index.js'
