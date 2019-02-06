@@ -30,6 +30,7 @@ let webpackConfigs = {
 }
 
 if (process.env.NODE_ENV === 'dev') {
+  webpackConfigs.mode = 'development'
   webpackConfigs.entry = './src/example/index.js'
 
   webpackConfigs.plugins.push(new HtmlWebpackPlugin({
@@ -45,6 +46,7 @@ if (process.env.NODE_ENV === 'dev') {
     port: 3001
   }
 } else {
+  webpackConfigs.mode = 'production'
   webpackConfigs.entry = './src/index.js'
 
   webpackConfigs.output = {
