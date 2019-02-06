@@ -107,7 +107,7 @@ class MyFormStaticDemo extends Component {
     )
   }
 
-  renderHelpPanel = (panel, data, name = 'props') => {
+  renderHelpPanel = (panel, data, name = 'form') => {
     return (
       <div style={{
         cursor: 'pointer'
@@ -116,7 +116,7 @@ class MyFormStaticDemo extends Component {
           float: 'left',
           padding: 5
         }}>
-          <small><i>{panel === 'data' ? name : 'source code'}</i></small>
+          <i>{panel === 'data' ? name : 'source code'}</i>
         </span>
         <ExpandMoreIcon style={{
           float: 'right',

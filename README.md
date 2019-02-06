@@ -9,23 +9,7 @@ $ npm i my-react-form
 $ yarn add my-react-form
 ```
 
-#### Wanna check the demo app ?
-Clone this repo first
-```bash
-$ git clone https://github.com/firstpersoncode/my-react-form.git
-```
-Then install all dependencies
-```bash
-$ npm install
-# or with yarn
-$ yarn
-```
-Then run the app and visit `localhost:3001`
-```bash
-$ npm start
-# or with yarn
-$ yarn start
-```
+#### [Demo ?, come here...](https://firstpersoncode.github.io/my-react-form/)
 
 ---
 #### Create your Form:

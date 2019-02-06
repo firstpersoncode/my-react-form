@@ -1,57 +1,11 @@
-import React, { Component } from 'react'
-import Markdown from 'react-remarkable'
-import hljs from 'highlight.js'
+import React, { Fragment } from 'react'
+import CodeBlock from './CodeBlock'
 
-const highlight = (str, lang) => {
-  if (lang && hljs.getLanguage(lang)) {
-    try {
-      return hljs.highlight(lang, str).value;
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  try {
-    return hljs.highlightAuto(str).value
-  } catch (err) {
-    console.error(err)
-  }
-
-  return '' // use external default escaping
-}
-
-const MyFormStaticSource = () => {
-  return (
-    <Markdown options={{
-      html:         true,        // Enable HTML tags in source
-      xhtmlOut:     true,        // Use '/' to close single tags (<br />)
-      breaks:       true,        // Convert '\n' in paragraphs into <br>
-      // langPrefix:   'language-',  // CSS language prefix for fenced blocks
-      linkify:      false,        // Autoconvert URL-like text to links
-
-      // Enable some language-neutral replacement + quotes beautification
-      typographer:  true,
-      highlight
-    }}>{`
-\`\`\`js
-import React, { Component, Fragment } from 'react'
-import MyForm from 'my-react-form'
+const header = `import React, { Component, Fragment } from 'react'
+import MyForm, { Field } from 'my-react-form'
 
 import bankList from '../bankList'
 import randomQuotes from '../randomQuotes'
-
-const numInputValidator = (value, min = 8, max = 20) => {
-  return value.toString().trim() &&
-    !isNaN(value.toString().trim()) &&
-    value.toString().trim().length > min &&
-    value.toString().trim().length <= max
-}
-
-const emailInputValidator = email => {
-    const re =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return re.test(String(email).toLowerCase())
-}
 
 const validation = {
   ['field-text']: {
@@ -72,35 +26,68 @@ const validation = {
     validate: val => val,
     error: 'Password is required'
   }
-}
-
-class MyFormDemo extends Component {
+}`
+const handler = `
   state = {
     submitted: null,
     randomQuotes: ''
   }
 
-  render() {
+  handleSubmit = form => {
+    setTimeout(() => {
+      // don't need the account_password_retype value
+      delete form.values.account_password_retype
+
+      // do whatever with the form.values ...
+      this.setState({ submitted: form.values })
+
+      form.handlers.setSubmitting(false)
+    }, 3000)
+  }
+
+  handleUpdate = form => {
+    // will triggered whenever form is updated
+    this.setState({ randomQuotes: randomQuotes[Math.floor((Math.random() * 10) + 1) - 1] })
+  }`
+const footer = `
+function numInputValidator (value) {
+  return value.toString().trim() &&
+  !isNaN(value.toString().trim())
+}
+
+function emailInputValidator (email) {
+  const re =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(String(email).toLowerCase())
+}
+
+export default MyFormDemo`
+
+const MyFormStaticSource = () => {
+  return (
+    <Fragment>
+      <CodeBlock
+        value={`${header}
+class MyFormDemo extends Component {`}
+        />
+      <CodeBlock
+        value={handler} />
+      <CodeBlock
+        value={`
+  render () {
     return (
-      <div style={{
-        padding: 15,
-        margin: '15px 0',
-        background: '#FFF'
-      }}>
-        <p>
-          Random quotes generated whenever the form is updated<br /><br />
-          {
-            this.state.randomQuotes
-              ? this.state.randomQuotes
-              : randomQuotes[0]
-          }
-        </p>
+      <Fragment>
+        Random quotes generated whenever the form is updated
+        {this.state.randomQuotes || randomQuotes[0]}
         <MyForm
           scrollOnError={true}
           withBaseCSS={true}
           validation={validation}
           onSubmit={this.handleSubmit}
-          onUpdate={this.handleUpdate}
+          onUpdate={this.handleUpdate}`}
+      />
+      <CodeBlock
+        value={`
           form={{
             ['field-text']: {
               placeholder: 'input text ...',
@@ -139,7 +126,10 @@ class MyFormDemo extends Component {
               label: 'I am Error ...',
               error: true,
               info: 'I will always Error'
-            },
+            },`}
+      />
+      <CodeBlock
+        value={`
             ['field-helper']: {
               placeholder: 'input text ...',
               label: 'Text with Helper',
@@ -190,40 +180,31 @@ class MyFormDemo extends Component {
             },
             ['field-submit']: {
               type: 'submit',
-              label: 'Submit',
+              label: 'Save',
+              // fullWidth: true,
               float: true,
               color: 'primary',
               variant: 'contained'
             }
           }}
         />
-
         {
           this.state.submitted
             ? JSON.stringify(this.state.submitted, undefined, 4)
             : null
         }
-      </div>
+      </Fragment>
     )
-  }
-
-  handleSubmit = form => {
-    setTimeout(() => {
-      delete form.values.account_password_retype
-      this.setState({ submitted: form.values })
-      form.handlers.setSubmitting(false)
-    }, 3000)
-  }
-
-  handleUpdate = form => {
-    // will triggered whenever form is updated
-    this.setState({ randomQuotes: randomQuotes[Math.floor((Math.random() * 10) + 1) - 1] })
-  }
+  }`}
+      />
+      <CodeBlock
+        language='javascript'
+        value={`
 }
 
-export default MyFormDemo
-\`\`\`
-    `}</Markdown>
+${footer}`}
+      />
+    </Fragment>
   )
 }
 

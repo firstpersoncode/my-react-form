@@ -121,7 +121,7 @@ class MyFormDemo extends Component {
     )
   }
 
-  renderHelpPanel = (panel, data, name = 'props') => {
+  renderHelpPanel = (panel, data, name = 'form') => {
     return (
       <div style={{
         cursor: 'pointer'
@@ -130,7 +130,7 @@ class MyFormDemo extends Component {
           float: 'left',
           padding: 5
         }}>
-          <small><i>{panel === 'data' ? name : 'source code'}</i></small>
+          <i>{panel === 'data' ? name : 'source code'}</i>
         </span>
         <ExpandMoreIcon style={{
           float: 'right',
@@ -166,7 +166,8 @@ class MyFormDemo extends Component {
 
   handleBlur = handlers => () => {
     // override account_number validation rule temporary
-    // now while typing, validator wont check if account_number format is invalid
+    // now after typing (onBlur), validator wont check if account_number format is invalid
+    // will ignore ---> min character should be 8 and max should be 20
     // unless we submit and it will run the default validation rule
     handlers.validateField('account_number', {
       validate: val => val,

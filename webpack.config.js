@@ -23,6 +23,15 @@ let webpackConfigs = {
           'style-loader',
           'css-loader'
         ]
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: {
+          loader: "file-loader",
+          options: {
+            name: '[path][name].[ext]',
+          }
+        }
       }
     ]
   },
@@ -57,7 +66,7 @@ if (process.env.NODE_ENV === 'dev') {
   }
 
   webpackConfigs.plugins.push(new HtmlWebpackPlugin({
-    hash: true,
+    // hash: true,
     template: path.join(__dirname, "src/example/index.html"),
     filename: "index.html"
   }))
