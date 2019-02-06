@@ -2,14 +2,31 @@
 Just simple Form for React
 
 #### Get Started:
-Install `my-react-form` from `npm`
+Install `my-react-form`
 ```bash
 $ npm i my-react-form
-```
-Install `my-react-form` from `yarn`
-```bash
+# or with yarn
 $ yarn add my-react-form
 ```
+
+#### Wanna check the demo app ?
+Clone this repo first
+```bash
+$ git clone https://github.com/firstpersoncode/my-react-form.git
+```
+Then install all dependencies
+```bash
+$ npm install
+# or with yarn
+$ yarn
+```
+Then run the app and visit `localhost:3001`
+```bash
+$ npm start
+# or with yarn
+$ yarn start
+```
+
 ---
 #### Create your Form:
 ```js
@@ -56,14 +73,14 @@ export default class MyFormComponent extends Component {
       />
     )
   }
-  
+
   handleSubmit = form => {
     setTimeout(() => {
       // we don't need account_password_retype's value
       delete form.values.account_password_retype
-      
+
       // do whatever with form.values ...
-      
+
       form.handlers.setSubmitting(false)
     }, 3000)
   }
@@ -191,7 +208,7 @@ class WithMyFormHOC extends Component {
         delete form.values.account_password_retype
 
         // do whatever with form.values ...
-        
+
         handlers.setSubmitting(false)
       }, 3000)
     }
