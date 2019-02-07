@@ -1,19 +1,22 @@
 import React from 'react'
-import SyntaxHighlighter from 'react-syntax-highlighter'
-import { monokaiSublime } from 'react-syntax-highlighter/dist/styles/hljs'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { duotoneDark } from 'react-syntax-highlighter/dist/styles/prism'
 import Typography from '@material-ui/core/Typography'
 
-const CodeBlock = ({ value, language }) => {
+const CodeBlock = ({ source, language }) => {
   return (
-    <Typography>
-      <SyntaxHighlighter
-        customStyle={{
-          margin: 0
-        }}
-        style={monokaiSublime} language='javascript'>
-        {value}
-      </SyntaxHighlighter>
-    </Typography>
+    <div style={{
+      maxHeight: '100%',
+      overflow: 'auto'
+    }}>
+      <Typography>
+        <SyntaxHighlighter
+          customStyle={{ fontSize: 8 }}
+          style={duotoneDark} language={language}>
+          {source}
+        </SyntaxHighlighter>
+      </Typography>
+    </div>
   )
 }
 
