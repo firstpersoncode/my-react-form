@@ -1,4 +1,6 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -210,6 +212,36 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff'
 */
 
 class Field extends Component {
+  static propTypes = {
+    onChange: PropTypes.func,
+    onBlur: PropTypes.func,
+    name: PropTypes.string,
+    id: PropTypes.string,
+    value: PropTypes.string || PropTypes.number,
+    type: PropTypes.string,
+    label: PropTypes.string,
+    placeholder: PropTypes.string,
+    required: PropTypes.bool || PropTypes.number,
+    disabled: PropTypes.bool || PropTypes.number,
+    fullWidth: PropTypes.bool || PropTypes.number,
+    multiline: PropTypes.bool || PropTypes.number,
+    rowsMax: PropTypes.number,
+    options: PropTypes.array,
+    option: PropTypes.object,
+    row: PropTypes.bool || PropTypes.number,
+    helper: PropTypes.string,
+    error: PropTypes.bool || PropTypes.number,
+    info: PropTypes.string,
+    native: PropTypes.bool || PropTypes.number,
+    readOnly: PropTypes.bool || PropTypes.number,
+    variant: PropTypes.string,
+    float: PropTypes.bool || PropTypes.number,
+    icon: PropTypes.node,
+    onClick: PropTypes.func,
+    color: PropTypes.string,
+    toggleShowPassword: PropTypes.bool || PropTypes.number
+  }
+
   state = { showPassword: false }
   handleClickShowPassword = () => this.setState({ showPassword: !this.state.showPassword })
   render () {

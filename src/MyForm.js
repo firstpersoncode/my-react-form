@@ -8,9 +8,9 @@ import Field from './Field'
 
 class MyForm extends Component {
   static propTypes = {
-    children: PropTypes.func || React.PropTypes.oneOfType([
-      React.PropTypes.arrayOf(React.PropTypes.node),
-      React.PropTypes.node
+    children: PropTypes.func || PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node
     ]),
     form: PropTypes.func || PropTypes.array || PropTypes.object,
     onUpdate: PropTypes.func,
@@ -109,7 +109,8 @@ class MyForm extends Component {
       values
     } = this.state
     const _configs = (field, key, fieldName = '') => update(field, updateField => {
-      let name = field['name'] || field['id'] || (fieldName && typeof fieldName === 'string' ? fieldName : 'field-' + key)
+      let name = field['name'] || field['id'] ||
+        (fieldName && typeof fieldName === 'string' ? fieldName : 'field-' + key)
       if (!updateField['name'] || !updateField['id']) {
         updateField['name'] = name
         updateField['id'] = name
@@ -171,7 +172,7 @@ class MyForm extends Component {
   }
 
   _returnForm = () => {
-    const { onSubmit, onUpdate } = this.props
+    const { onSubmit } = this.props
     let form = {
       values: this.state.values,
       errors: this.state.errors,
